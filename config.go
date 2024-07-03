@@ -64,12 +64,6 @@ func (cfg *Config) Unmarshal(conf *confmap.Conf) error {
 		if cfg.HTTP.TracesURLPath, err = sanitizeURLPath(cfg.HTTP.TracesURLPath); err != nil {
 			return err
 		}
-		if cfg.HTTP.MetricsURLPath, err = sanitizeURLPath(cfg.HTTP.MetricsURLPath); err != nil {
-			return err
-		}
-		if cfg.HTTP.LogsURLPath, err = sanitizeURLPath(cfg.HTTP.LogsURLPath); err != nil {
-			return err
-		}
 	}
 
 	return nil

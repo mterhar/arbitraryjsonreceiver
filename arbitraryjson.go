@@ -11,7 +11,7 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/mterhar/arbitraryjsonreceiver/internal/trace"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/arbitraryjsonreceiver/internal/trace"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/config/confighttp"
 	"go.opentelemetry.io/collector/consumer"

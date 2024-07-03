@@ -6,11 +6,11 @@ package arbitraryjsonreceiver // import "go.opentelemetry.io/collector/receiver/
 import (
 	"context"
 
-	"github.com/mterhar/arbitraryjsonreceiver/internal/metadata"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/arbitraryjsonreceiver/internal/metadata"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/arbitraryjsonreceiver/internal/sharedcomponent"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/config/confighttp"
 	"go.opentelemetry.io/collector/consumer"
-	"go.opentelemetry.io/collector/internal/sharedcomponent"
 	"go.opentelemetry.io/collector/receiver"
 )
 
@@ -69,8 +69,8 @@ func createTraces(
 	oCfg := cfg.(*Config)
 	r, err := receivers.LoadOrStore(
 		oCfg,
-		func() (*otlpReceiver, error) {
-			return newOtlpReceiver(oCfg, &set)
+		func() (*arbitraryjsonReceiver, error) {
+			return newarbitraryjsonReceiver(oCfg, &set)
 		},
 		&set.TelemetrySettings,
 	)
@@ -88,4 +88,4 @@ func createTraces(
 // create separate objects, they must use one otlpReceiver object per configuration.
 // When the receiver is shutdown it should be removed from this map so the same configuration
 // can be recreated successfully.
-var receivers = sharedcomponent.NewMap[*Config, *otlpReceiver]()
+var receivers = sharedcomponent.NewMap[*Config, *arbitraryjsonReceiver]()

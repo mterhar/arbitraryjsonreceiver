@@ -21,7 +21,7 @@ type simpleSpan struct {
 	Data       map[string]interface{} `json:"data"`
 }
 
-func toTraces(chunks map[string][]simpleSpan) (trac, err) {
+func toTraces(chunks map[string][]simpleSpan) (ptrace.Traces, error) {
 	// Creating a map of service spans to slices
 	// since the expectation is that `service.name`
 	// is added as a resource attribute in most systems

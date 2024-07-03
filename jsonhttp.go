@@ -7,12 +7,13 @@ import (
 	"mime"
 	"net/http"
 
+	"go.opentelemetry.io/collector/pdata/ptrace/ptraceotlp"
 	spb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc/status"
 
-	"github.com/mterhar/arbitraryjsonreceiver/internal/errors"
-	"github.com/mterhar/arbitraryjsonreceiver/internal/trace"
-	"go.opentelemetry.io/collector/internal/httphelper"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/arbitraryjsonreceiver/internal/errors"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/arbitraryjsonreceiver/internal/httphelper"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/arbitraryjsonreceiver/internal/trace"
 )
 
 // Pre-computed status with code=Internal to be used in case of a marshaling error.
@@ -32,11 +33,13 @@ func handleTraces(resp http.ResponseWriter, req *http.Request, tracesReceiver *t
 		return
 	}
 
-	otlpReq, err := toTraces(simpleSpans)
+	otlpTraces, err := toTraces(simpleSpans)
 	if err != nil {
 		writeError(resp, enc, err, http.StatusBadRequest)
 		return
 	}
+
+	otlpReq := ptraceotlp.NewExportRequestFromTraces(otlpTraces)
 
 	otlpResp, err := tracesReceiver.Export(req.Context(), otlpReq)
 	if err != nil {
@@ -99,9 +102,6 @@ func writeError(w http.ResponseWriter, encoder encoder, err error, statusCode in
 func errorHandler(w http.ResponseWriter, r *http.Request, errMsg string, statusCode int) {
 	s := httphelper.NewStatusFromMsgAndHTTPCode(errMsg, statusCode)
 	switch getMimeTypeFromContentType(r.Header.Get("Content-Type")) {
-	case pbContentType:
-		writeStatusResponse(w, pbEncoder, statusCode, s.Proto())
-		return
 	case jsonContentType:
 		writeStatusResponse(w, jsEncoder, statusCode, s.Proto())
 		return

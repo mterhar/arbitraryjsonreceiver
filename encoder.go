@@ -8,7 +8,6 @@ import (
 	"bytes"
 
 	"github.com/gogo/protobuf/jsonpb"
-	"github.com/gogo/protobuf/proto"
 	spb "google.golang.org/genproto/googleapis/rpc/status"
 
 	"go.opentelemetry.io/collector/pdata/plog/plogotlp"
@@ -22,7 +21,6 @@ const (
 )
 
 var (
-	pbEncoder       = &protoEncoder{}
 	jsEncoder       = &jsonEncoder{}
 	jsonPbMarshaler = &jsonpb.Marshaler{}
 )
@@ -59,26 +57,6 @@ func (protoEncoder) unmarshalLogsRequest(buf []byte) (plogotlp.ExportRequest, er
 	req := plogotlp.NewExportRequest()
 	err := req.UnmarshalProto(buf)
 	return req, err
-}
-
-func (protoEncoder) marshalTracesResponse(resp ptraceotlp.ExportResponse) ([]byte, error) {
-	return resp.MarshalProto()
-}
-
-func (protoEncoder) marshalMetricsResponse(resp pmetricotlp.ExportResponse) ([]byte, error) {
-	return resp.MarshalProto()
-}
-
-func (protoEncoder) marshalLogsResponse(resp plogotlp.ExportResponse) ([]byte, error) {
-	return resp.MarshalProto()
-}
-
-func (protoEncoder) marshalStatus(resp *spb.Status) ([]byte, error) {
-	return proto.Marshal(resp)
-}
-
-func (protoEncoder) contentType() string {
-	return pbContentType
 }
 
 type jsonEncoder struct{}

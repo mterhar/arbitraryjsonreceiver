@@ -6,9 +6,9 @@ package trace // import "go.opentelemetry.io/collector/receiver/otlpreceiver/int
 import (
 	"context"
 
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/arbitraryjsonreceiver/internal/errors"
 	"go.opentelemetry.io/collector/consumer"
 	"go.opentelemetry.io/collector/pdata/ptrace/ptraceotlp"
-	"go.opentelemetry.io/collector/receiver/otlpreceiver/internal/errors"
 	"go.opentelemetry.io/collector/receiver/receiverhelper"
 )
 
