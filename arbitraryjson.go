@@ -96,9 +96,6 @@ func (r *arbitraryjsonReceiver) startHTTPServer(ctx context.Context, host compon
 func (r *arbitraryjsonReceiver) Start(ctx context.Context, host component.Host) error {
 
 	if err := r.startHTTPServer(ctx, host); err != nil {
-		// It's possible that a valid GRPC server configuration was specified,
-		// but an invalid HTTP configuration. If that's the case, the successfully
-		// started GRPC server must be shutdown to ensure no goroutines are leaked.
 		return errors.Join(err, r.Shutdown(ctx))
 	}
 
