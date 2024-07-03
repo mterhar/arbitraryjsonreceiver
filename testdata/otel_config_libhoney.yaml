@@ -1,0 +1,49 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+  arbitraryjson:
+    wrapper: array
+    http:
+      endpoint: 0.0.0.0:8080
+      trace_url_path: "/"
+    resources:
+      service_name: data.service_name
+    attributes:
+      sample_rate: SampleRate
+      trace_id: data.trace_id
+      parent_id: data.parent_id
+      span_id: data.span_id
+      name: data.name
+      spankind: data.span.kind
+      starttimeFields:
+        - Time
+        - timestamp.start
+      durationFields:
+        - duration_ms
+        - timing.duration_ms
+        - timing.sysctl_ms
+      endtimeFields:
+        - timestamp.end
+    attributes_from:
+      - 'data'
+
+processors:
+  batch:
+
+exporters:
+  debug:
+    verbosity: detailed
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug]
+  telemetry:
+    logs:
+      level: debug
